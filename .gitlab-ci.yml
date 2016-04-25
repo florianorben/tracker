@@ -1,0 +1,19 @@
+before_script:
+  - cd ..
+  - export GOPATH=$(pwd)
+  - export CURRENT_BUILD_PATH=$(pwd)
+  - mkdir src && mv tracker src && cd src
+  - cd src/tracker
+  - rm -rf _bin
+  - go get
+
+build:linux:
+  stage: build
+  script: go install tracker && mkdir _bin && mv ../../bin/tracker _bin/
+  artifacts:
+    untracked: true
+    paths:
+    - _bin/
+    - _bin
+    - _bin/tracker
+    - src/tracker/_bin/tracker
