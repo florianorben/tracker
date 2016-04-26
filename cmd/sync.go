@@ -8,6 +8,7 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"io/ioutil"
 	"net/http"
 	"tracker/helpers"
 	"tracker/tracker"
@@ -26,7 +27,7 @@ var syncCmd = &cobra.Command{
   $ tracker config backend.url http://localhost:4242
   $ tracker config backend.token 7e329263e329
   $ tracker sync
-  Received 42 frames from the server
+  Received 42 frames from the server. Added: 0 Updated: 3
   Pushed 23 frames to the server`,
 	Run: sync,
 }
@@ -73,11 +74,30 @@ func upload(url, token string, data []byte) error {
 	if err != nil {
 		return err
 	}
+
+	b, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
 	if resp.Status != "200 OK" {
 		return errors.New(resp.Status)
 	}
+
+	var body tracker.Frames
+	if err := json.Unmarshal(b, &body); err != nil {
+		return err
+	}
+
+	frames := tracker.GetFrames()
+	cnt := len(frames)
+	added, updated := frames.Merge(body)
+
+	fmt.Printf(
+		"Received %s frames from server. Added: %s Updated: %s\n",
+		helpers.PrintBold(fmt.Sprintf("%d", len(body))),
+		helpers.PrintBold(fmt.Sprintf("%d", added)),
+		helpers.PrintBold(fmt.Sprintf("%d", updated)),
+	)
+	fmt.Printf("Pushed %s frames to server.\n", helpers.PrintBold(fmt.Sprintf("%d", cnt)))
 
 	return nil
 }

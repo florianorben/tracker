@@ -167,6 +167,35 @@ func (f Frames) Persist() {
 	file.Write(bytes.TrimSpace(b))
 }
 
+func (f *Frames) Merge(other Frames) (int, int) {
+	toAppend := make([]Frame, 0, len(other))
+	updated := 0
+
+	for _, otherFrame := range other {
+		exists := false
+		for i, frame := range *f {
+			if frame.Uuid == otherFrame.Uuid {
+				exists = true
+				if otherFrame.LastEdit.Unix() > frame.LastEdit.Unix() {
+					(*f)[i] = otherFrame
+					updated++
+				}
+			}
+		}
+
+		if !exists {
+			toAppend = append(toAppend, otherFrame)
+		}
+	}
+
+	*f = append(*f, toAppend...)
+	sort.Sort(f)
+
+	f.Persist()
+
+	return len(toAppend), updated
+}
+
 func (f Frames) ByUUID(uuid string) (int, Frame) {
 	for i, frame := range f {
 		if frame.Uuid == uuid {
