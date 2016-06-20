@@ -27,13 +27,25 @@ var projectsCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(projectsCmd)
+
+	projectsCmd.Flags().BoolP("no-color", "b", false, "No color mode")
 }
 
 func projects(cmd *cobra.Command, args []string) {
 	frames := tracker.GetFrames()
 	projects := frames.Projects()
 
+	var noColor bool
+	var err error
+	if noColor, err = cmd.Flags().GetBool("no-color"); err != nil {
+		noColor = false
+	}
+
 	for _, project := range projects {
-		fmt.Println(helpers.PrintPurple(project))
+		if noColor {
+			fmt.Println(project)
+		} else {
+			fmt.Println(helpers.PrintPurple(project))
+		}
 	}
 }

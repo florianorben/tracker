@@ -27,13 +27,25 @@ var tagsCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(tagsCmd)
+
+	tagsCmd.Flags().BoolP("no-color", "b", false, "No color mode")
 }
 
 func tags(cmd *cobra.Command, args []string) {
 	frames := tracker.GetFrames()
 	tags := frames.Tags()
 
+	var noColor bool
+	var err error
+	if noColor, err = cmd.Flags().GetBool("no-color"); err != nil {
+		noColor = false
+	}
+
 	for _, tag := range tags {
-		fmt.Println(helpers.PrintBlue(tag))
+		if noColor {
+			fmt.Println(tag)
+		} else {
+			fmt.Println(helpers.PrintBlue(tag))
+		}
 	}
 }
