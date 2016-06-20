@@ -92,10 +92,15 @@ func edit(cmd *cobra.Command, args []string) {
 	frames[index] = newFrame
 	frames.Persist()
 
+	formattedTags := newFrame.FormattedTags()
+	if formattedTags != "" {
+		formattedTags = " " + formattedTags
+	}
+
 	fmt.Printf(
-		"Edited frame for project %s %s, from %s to %s (%s)\n",
+		"Edited frame for project %s%s, from %s to %s (%s)\n",
 		newFrame.FormattedProject(),
-		newFrame.FormattedTags(),
+		formattedTags,
 		newFrame.FormattedStartTime(),
 		newFrame.FormattedEndTime(),
 		newFrame.Duration().String(),

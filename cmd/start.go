@@ -58,5 +58,10 @@ func start(cmd *cobra.Command, args []string) {
 	frames = append(frames, newFrame)
 	frames.Persist()
 
-	fmt.Printf("Starting project %s %s at %s\n", newFrame.FormattedProject(), newFrame.FormattedTags(), newFrame.FormattedStartTime())
+	formattedTags := newFrame.FormattedTags()
+	if formattedTags != "" {
+		formattedTags = " " + formattedTags
+	}
+
+	fmt.Printf("Starting project %s%s at %s\n", newFrame.FormattedProject(), formattedTags, newFrame.FormattedStartTime())
 }

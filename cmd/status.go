@@ -37,10 +37,15 @@ func status(cmd *cobra.Command, args []string) {
 	if activeFrame.Start.IsZero() {
 		fmt.Println("No project started")
 	} else {
+		formattedTags := activeFrame.FormattedTags()
+		if formattedTags != "" {
+			formattedTags = " " + formattedTags
+		}
+
 		fmt.Printf(
-			"Project %s %s started %s (%s)\n",
+			"Project %s%s started %s (%s)\n",
 			activeFrame.FormattedProject(),
-			activeFrame.FormattedTags(),
+			formattedTags,
 			activeFrame.RelativeTime(),
 			activeFrame.Start,
 		)

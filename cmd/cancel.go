@@ -27,7 +27,12 @@ func cancelFrame(cmd *cobra.Command, args []string) {
 		if !frame.InProgress() {
 			newFrames = append(newFrames, frame)
 		} else {
-			fmt.Printf("Canceling the timer for project %s %s\n", frame.FormattedProject(), frame.FormattedTags())
+			formattedTags := frame.FormattedTags()
+			if formattedTags != "" {
+				formattedTags = " " + formattedTags
+			}
+
+			fmt.Printf("Canceling the timer for project %s%s\n", frame.FormattedProject(), formattedTags)
 		}
 	}
 

@@ -39,10 +39,16 @@ func stop(cmd *cobra.Command, args []string) {
 		fmt.Println("Error: " + helpers.PrintRed("No project started"))
 	} else {
 		frames.Persist()
+
+		formattedTags := startedFrame.FormattedTags()
+		if formattedTags != "" {
+			formattedTags = " " + formattedTags
+		}
+
 		fmt.Printf(
-			"Stopping project %s %s, started %s. (id: %s)\n",
+			"Stopping project %s%s, started %s. (id: %s)\n",
 			startedFrame.FormattedProject(),
-			startedFrame.FormattedTags(),
+			formattedTags,
 			startedFrame.RelativeTime(),
 			startedFrame.Uuid,
 		)
