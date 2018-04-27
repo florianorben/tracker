@@ -1,11 +1,10 @@
 package tracker
 
 import (
-	"time"
-
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 	"tracker/helpers"
 
 	"github.com/satori/go.uuid"
@@ -20,15 +19,21 @@ const (
 
 var DateLocation = time.Now().Location()
 
-type Frame struct {
-	Start    time.Time
-	End      time.Time
-	Project  string
-	Tags     []string
-	Uuid     string
-	LastEdit time.Time
-	Comment  string
-}
+type (
+	Frame struct {
+		Start    time.Time
+		End      time.Time
+		Project  string
+		Tags     []string
+		Uuid     string
+		LastEdit time.Time
+		Comment  string
+	}
+	EditFrameOpts struct {
+		UUID     string
+		Position int
+	}
+)
 
 func NewFrame(p string, t []string) Frame {
 	return Frame{
@@ -116,6 +121,8 @@ func (f Frame) Equals(other Frame) bool {
 		return false
 	} else if len(f.Tags) != len(other.Tags) {
 		return false
+	} else if f.Comment != other.Comment {
+		return false
 	} else {
 		tmpTags := make(map[string]bool)
 		for _, tag := range f.Tags {
@@ -172,4 +179,59 @@ func (f Frame) RelativeTime() string {
 	}
 
 	return t
+}
+
+func EditFrame(opts EditFrameOpts) (Frame, error) {
+	var frame Frame
+	frames := GetFrames()
+	index := -1
+	arg := ""
+
+	if opts.UUID != "" {
+		index, frame = frames.ByUUID(opts.UUID)
+		arg = opts.UUID
+	} else if opts.Position < 0 {
+		index, frame = frames.ByPosition(opts.Position)
+		arg = fmt.Sprintf("%d", opts.Position)
+	}
+
+	if index == -1 {
+		return frame, fmt.Errorf("Error: %s %s.\n", helpers.PrintRed("No frame found with id"), arg)
+	}
+
+	b, err := json.MarshalIndent(&struct {
+		Start   string   `json:"start"`
+		End     string   `json:"end"`
+		Project string   `json:"project"`
+		Tags    []string `json:"tags"`
+		Comment string   `json:"comment"`
+	}{
+		Start:   frame.Start.Format(DateTimeFormat),
+		End:     frame.End.Format(DateTimeFormat),
+		Project: frame.Project,
+		Tags:    frame.Tags,
+		Comment: frame.Comment,
+	}, "", "  ")
+	if err != nil {
+		return frame, fmt.Errorf("Error: Creating temp file failed: %s\n", helpers.PrintRed(err.Error()))
+	}
+
+	newFrameContents, err := helpers.OpenInEditor(b)
+	if err != nil {
+		return frame, err
+	}
+
+	var newFrame Frame
+	json.Unmarshal(newFrameContents, &newFrame)
+	newFrame.Uuid = frame.Uuid
+	newFrame.LastEdit = time.Now()
+
+	if frames[index].Equals(newFrame) {
+		return frame, fmt.Errorf("%s\n", "No changes made.")
+	}
+
+	frames[index] = newFrame
+	frames.Persist()
+
+	return newFrame, nil
 }

@@ -3,11 +3,12 @@ package tracker
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
 	"sort"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type (

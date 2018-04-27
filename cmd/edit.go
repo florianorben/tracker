@@ -3,12 +3,11 @@ package cmd
 import (
 	"fmt"
 
-	"encoding/json"
-	"github.com/spf13/cobra"
 	"strconv"
-	"time"
 	"tracker/helpers"
 	"tracker/tracker"
+
+	"github.com/spf13/cobra"
 )
 
 var editCmd = &cobra.Command{
@@ -39,58 +38,23 @@ func edit(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	frames := tracker.GetFrames()
-	index := -1
-	var frame tracker.Frame
+	opts := tracker.EditFrameOpts{}
 
 	if len(args[0]) == 36 {
-		index, frame = frames.ByUUID(args[0])
+		opts.UUID = args[0]
 	} else if args[0][0] == '@' {
 		if pos, err := strconv.Atoi(args[0][1:]); err != nil {
-			index = -1
+			opts.Position = -1
 		} else {
-			index, frame = frames.ByPosition(pos)
+			opts.Position = pos
 		}
 	}
 
-	if index == -1 {
-		fmt.Printf("Error: %s %s.\n", helpers.PrintRed("No frame found with id"), args[0])
-		return
-	}
-
-	b, err := json.MarshalIndent(&struct {
-		Start   string   `json:"start"`
-		End     string   `json:"end"`
-		Project string   `json:"project"`
-		Tags    []string `json:"tags"`
-	}{
-		Start:   frame.Start.Format(tracker.DateTimeFormat),
-		End:     frame.End.Format(tracker.DateTimeFormat),
-		Project: frame.Project,
-		Tags:    frame.Tags,
-	}, "", "  ")
+	newFrame, err := tracker.EditFrame(opts)
 	if err != nil {
-		fmt.Printf("Error: Creating temp file failed: %s\n", helpers.PrintRed(err.Error()))
+		fmt.Print(err.Error())
 		return
 	}
-
-	newFrameContents, err := helpers.OpenInEditor(b)
-	if err != nil {
-		return
-	}
-
-	var newFrame tracker.Frame
-	json.Unmarshal(newFrameContents, &newFrame)
-	newFrame.Uuid = frame.Uuid
-	newFrame.LastEdit = time.Now()
-
-	if frames[index].Equals(newFrame) {
-		fmt.Println("No changes made.")
-		return
-	}
-
-	frames[index] = newFrame
-	frames.Persist()
 
 	formattedTags := newFrame.FormattedTags()
 	if formattedTags != "" {
