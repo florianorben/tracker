@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"tracker/helpers"
 	"tracker/tracker"
+
+	"github.com/spf13/cobra"
 )
 
 var logCmd = &cobra.Command{
@@ -57,7 +58,7 @@ var logCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(logCmd)
 
-	logCmd.Flags().StringP("from", "f", "", "Start date (YYYY-MM-DD")
+	logCmd.Flags().StringP("from", "f", "", "Start date (YYYY-MM-DD)")
 	logCmd.Flags().StringP("to", "t", "", "End date (YYYY-MM-DD)")
 	logCmd.Flags().StringSliceP("project", "p", []string{}, `Reports activity only for the given project.
                         You can add other projects by using this option several times.`)
