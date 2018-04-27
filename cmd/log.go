@@ -24,6 +24,10 @@ var logCmd = &cobra.Command{
   '--tag' options. They can be specified several times each to add multiple
   projects or tags to the log.
 
+  Add -v or --verbose to also show comments added to each frame.
+
+  -o or --oneline prints a truncated output.
+
   Example:
 
   $ tracker log --project voyager2 --project apollo11
@@ -64,7 +68,8 @@ func init() {
                         You can add other projects by using this option several times.`)
 	logCmd.Flags().StringSliceP("tag", "T", []string{}, `Reports activity only for frames containing the given tag.
                         You can add several tags by using this option multiple times`)
-	logCmd.Flags().Bool("oneline", false, "Compact output")
+	logCmd.Flags().BoolP("oneline", "o", false, "Compact output")
+	logCmd.Flags().BoolP("verbose", "v", false, "Verbose output")
 
 }
 
@@ -96,5 +101,10 @@ func log(cmd *cobra.Command, args []string) {
 		oneline = false
 	}
 
-	tracker.Log(query, oneline)
+	verbose, err := cmd.Flags().GetBool("verbose")
+	if err != nil {
+		oneline = false
+	}
+
+	tracker.Log(query, oneline, verbose)
 }

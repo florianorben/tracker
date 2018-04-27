@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 	"tracker/helpers"
 )
 
-func Log(q FramesQuery, oneline bool) {
+func Log(q FramesQuery, oneline bool, verbose bool) {
 	frames := GetFramesFiltered(q)
 	groupedFrames := make(map[int][]Frame)
 	order := make([]int, 0, len(frames))
@@ -79,8 +80,18 @@ func Log(q FramesQuery, oneline bool) {
 				shortDate = helpers.PrintTeal(time.Unix(int64(timestamp), 0).Format(DateFormat) + " ")
 			}
 
+			comment := ""
+			if !oneline && verbose && frame.Comment != "" {
+				commentIndent := indent + "  "
+				commentLines := strings.Split(frame.Comment, "\n")
+				for i := range commentLines {
+					commentLines[i] = commentIndent + commentLines[i]
+				}
+				comment = strings.Join(commentLines, "\n") + "\n"
+			}
+
 			fmt.Printf(
-				indent+"%36s %s%s to %s     %"+strconv.Itoa(maxDurationLen)+"s %s %s\n",
+				indent+"%36s %s%s to %s     %"+strconv.Itoa(maxDurationLen)+"s %s %s\n%s",
 				frame.Uuid,
 				shortDate,
 				frame.FormattedStartTime(),
@@ -88,13 +99,13 @@ func Log(q FramesQuery, oneline bool) {
 				frame.Duration().String(),
 				helpers.PrintPurple(fmt.Sprintf("%"+strconv.Itoa(maxProjectNameLen)+"s", frame.Project)),
 				frame.FormattedTags(),
+				comment,
 			)
 		}
 
 		if !oneline {
 			fmt.Print("\n")
 		}
-
 	}
 }
 

@@ -5,9 +5,10 @@ import (
 
 	"encoding/json"
 	"fmt"
-	"github.com/satori/go.uuid"
 	"strings"
 	"tracker/helpers"
+
+	"github.com/satori/go.uuid"
 )
 
 const (
@@ -26,6 +27,7 @@ type Frame struct {
 	Tags     []string
 	Uuid     string
 	LastEdit time.Time
+	Comment  string
 }
 
 func NewFrame(p string, t []string) Frame {
@@ -36,6 +38,7 @@ func NewFrame(p string, t []string) Frame {
 		Uuid:     uuid.NewV4().String(),
 		Tags:     t,
 		LastEdit: time.Now(),
+		Comment:  "",
 	}
 }
 
@@ -52,6 +55,7 @@ func (f *Frame) MarshalJSON() ([]byte, error) {
 		Tags     []string `json:"tags"`
 		Uuid     string   `json:"uuid"`
 		LastEdit string   `json:"lastEdit"`
+		Comment  string   `json:"comment"`
 	}{
 		f.Start.Format(DateTimeFormat),
 		end,
@@ -59,6 +63,7 @@ func (f *Frame) MarshalJSON() ([]byte, error) {
 		f.Tags,
 		f.Uuid,
 		f.LastEdit.Format(DateTimeFormat),
+		f.Comment,
 	})
 }
 
