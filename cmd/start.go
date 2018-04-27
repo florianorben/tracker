@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"tracker/helpers"
 	"tracker/tracker"
+	"strings"
 )
 
 var startCmd = &cobra.Command{
@@ -34,6 +35,12 @@ func start(cmd *cobra.Command, args []string) {
 
 	project := args[0]
 	tags := make([]string, 0)
+
+	if project[0] == '+' {
+		tmp := strings.Split(project[1:], "-")
+		tags = append(tags, project[1:])
+		project = tmp[0]
+	}
 
 	for i, arg := range args {
 		if i == 0 {
