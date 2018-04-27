@@ -3,16 +3,18 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"strconv"
 	"strings"
 	"tracker/helpers"
 	"tracker/tracker"
+
+	"github.com/spf13/cobra"
 )
 
 var removeCmd = &cobra.Command{
-	Use:   "remove",
-	Short: "Remove a frame.",
+	Use:     "remove",
+	Aliases: []string{"rm"},
+	Short:   "Remove a frame.",
 	Long: `Remove a frame.
 
   You can specify the frame either by id or by position
