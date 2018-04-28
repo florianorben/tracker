@@ -9,6 +9,7 @@ _tracker_commands=(
   'frames:Display the list of all frame IDs.'
   'help:Display help information'
   'log:Display each recorded session during the...'
+  'login:Save login credentials to backend (jira).'
   'merge:Perform a merge of the existing frames with a...'
   'projects:Display the list of all the existing...'
   'remove:Remove a frame.'
@@ -117,6 +118,12 @@ _tracker() {
           _arguments : \
             '-f[Dont ask for confirmation]' \
             ': :_tracker_frames' \
+            '--help'
+          ;;
+        (stop)
+          _arguments : \
+            '*'{-m,--message}'Add message' \
+            '*'{-n,--no-log}'Dont automatically add a worklog, even if configured otherwise' \
             '--help'
           ;;
         (log|report)

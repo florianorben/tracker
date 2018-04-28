@@ -1,16 +1,16 @@
 package tracker
 
 import (
-	"fmt"
-
 	"bytes"
-	"github.com/BurntSushi/toml"
-	"github.com/spf13/viper"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
 	"tracker/helpers"
 	"unicode"
+
+	"github.com/BurntSushi/toml"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -28,8 +28,10 @@ type Config struct {
 	}
 
 	Backend struct {
-		Token string
-		Url   string
+		Token          string
+		Url            string
+		User           string
+		AutoAddWorkLog bool
 	}
 }
 
@@ -47,6 +49,8 @@ defaultEndDate = 0
 [backend]
 token = ""
 url = ""
+user = ""
+autoAddWorkLog = false
 `)
 
 func SetConfig(key string, value interface{}) {
@@ -57,7 +61,7 @@ func SetConfig(key string, value interface{}) {
 		os.Exit(1)
 	}
 
-	current := viper.GetStringMap((keyArgs[0]))
+	current := viper.GetStringMap(keyArgs[0])
 	subKey := []rune(keyArgs[1])
 	subKey[0] = unicode.ToUpper(subKey[0])
 	current[string(subKey)] = value

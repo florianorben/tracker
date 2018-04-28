@@ -1,6 +1,8 @@
 package main
 
-import "tracker/cmd"
+import (
+	"tracker/cmd"
+)
 
 func main() {
 	cmd.Execute()

@@ -1,16 +1,16 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
-
-	"bytes"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"os/user"
 	"path"
 	"tracker/helpers"
 	"tracker/tracker"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 const AppVersion = "1.0.0"
@@ -110,7 +110,6 @@ func initConfig() {
 
 	viper.SetDefault("appDir", appDir)
 	viper.SetDefault("framesFile", path.Join(appDir, "frames"))
-	viper.SetDefault("foo.bar", "xyz")
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {

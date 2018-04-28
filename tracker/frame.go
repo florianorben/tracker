@@ -3,11 +3,15 @@ package tracker
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 	"tracker/helpers"
 
 	"github.com/satori/go.uuid"
+	"github.com/spf13/viper"
+	"github.com/zalando/go-keyring"
+	"gopkg.in/andygrunwald/go-jira.v1"
 )
 
 const (
@@ -28,6 +32,7 @@ type (
 		Uuid     string
 		LastEdit time.Time
 		Comment  string
+		Synced   bool
 	}
 	EditFrameOpts struct {
 		UUID     string
@@ -44,6 +49,7 @@ func NewFrame(p string, t []string) Frame {
 		Tags:     t,
 		LastEdit: time.Now(),
 		Comment:  "",
+		Synced:   false,
 	}
 }
 
@@ -61,6 +67,7 @@ func (f *Frame) MarshalJSON() ([]byte, error) {
 		Uuid     string   `json:"uuid"`
 		LastEdit string   `json:"lastEdit"`
 		Comment  string   `json:"comment"`
+		Synced   bool     `json:"synced"`
 	}{
 		f.Start.Format(DateTimeFormat),
 		end,
@@ -69,6 +76,7 @@ func (f *Frame) MarshalJSON() ([]byte, error) {
 		f.Uuid,
 		f.LastEdit.Format(DateTimeFormat),
 		f.Comment,
+		f.Synced,
 	})
 }
 
@@ -122,6 +130,8 @@ func (f Frame) Equals(other Frame) bool {
 	} else if len(f.Tags) != len(other.Tags) {
 		return false
 	} else if f.Comment != other.Comment {
+		return false
+	} else if f.Synced != other.Synced {
 		return false
 	} else {
 		tmpTags := make(map[string]bool)
@@ -179,6 +189,57 @@ func (f Frame) RelativeTime() string {
 	}
 
 	return t
+}
+
+func (f *Frame) AddWorkLog() {
+	if len(f.Tags) == 0 || f.Synced {
+		return
+	}
+
+	user := viper.GetString("backend.user")
+	if user == "" {
+		fmt.Printf("Error: %s\n", helpers.PrintRed("Please use tracker login first"))
+	}
+
+	pass, err := keyring.Get("tracker", user)
+	if err != nil {
+		if err != keyring.ErrNotFound {
+			fmt.Printf("Error: %s\n", helpers.PrintRed(err.Error()))
+			os.Exit(1)
+		} else {
+			fmt.Printf("Error: %s\n", helpers.PrintRed("Please use tracker login first"))
+			return
+		}
+	}
+
+	tp := jira.BasicAuthTransport{
+		Username: user,
+		Password: pass,
+	}
+
+	client, err := jira.NewClient(tp.Client(), viper.GetString("backend.url"))
+	if err != nil {
+		return
+	}
+
+	for _, tag := range f.Tags {
+		_, _, err = client.Issue.AddWorklogRecord(tag, &jira.WorklogRecord{
+			Comment:          f.Comment,
+			TimeSpentSeconds: int(f.End.Sub(f.Start).Truncate(time.Minute).Seconds()),
+		})
+
+		if err != nil {
+			if jiraError, ok := err.(*jira.Error); !ok {
+				fmt.Printf("Error: %s\n", helpers.PrintRed(err.Error()))
+				return
+			} else if jiraError.ErrorMessages[0] == "Issue Does Not Exist" {
+				continue
+			}
+		}
+
+		f.Synced = true
+		return
+	}
 }
 
 func EditFrame(opts EditFrameOpts) (Frame, error) {

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-
 	"time"
 	"tracker/helpers"
 	"tracker/tracker"
@@ -10,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var stopCmd = &cobra.Command{
@@ -31,10 +31,12 @@ var stopCmd = &cobra.Command{
 }
 
 var addMessage bool
+var noLog bool
 
 func init() {
 	RootCmd.AddCommand(stopCmd)
 	stopCmd.Flags().BoolVarP(&addMessage, "message", "m", false, "Add message")
+	stopCmd.Flags().BoolVarP(&noLog, "no-log", "n", false, "Don't automatically add a worklog, even if configured otherwise")
 }
 
 func stop(cmd *cobra.Command, args []string) {
@@ -54,18 +56,26 @@ func stop(cmd *cobra.Command, args []string) {
 	}
 
 	var startedFrame tracker.Frame
+	var frameIndex int
 	frames := tracker.GetFrames()
+
 	for i, frame := range frames {
 		if frame.End.IsZero() {
-			startedFrame = frame
 			frames[i].End = time.Now()
 			frames[i].Comment = message
+			startedFrame = frames[i]
+			frameIndex = i
 		}
 	}
 
 	if startedFrame.Start.IsZero() {
 		fmt.Println("Error: " + helpers.PrintRed("No project started"))
 	} else {
+		if viper.GetBool("backend.autoAddWorkLog") && !noLog {
+			startedFrame.AddWorkLog()
+			frames[frameIndex] = startedFrame
+		}
+
 		frames.Persist()
 
 		formattedTags := startedFrame.FormattedTags()

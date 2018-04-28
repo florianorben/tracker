@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"strconv"
-	"strings"
 	"tracker/helpers"
 	"tracker/tracker"
 
@@ -55,7 +54,7 @@ func remove(cmd *cobra.Command, args []string) {
 	}
 
 	if force == false {
-		ok := askForConfirmation(
+		ok := helpers.AskForConfirmation(
 			fmt.Sprintf(
 				"You are about to remove frame %s from %s to %s, continue? [y/N]: ",
 				oldFrame.Uuid,
@@ -79,28 +78,4 @@ func remove(cmd *cobra.Command, args []string) {
 
 	newFrames.Persist()
 	fmt.Println("Frame deleted.")
-}
-
-func askForConfirmation(q string) bool {
-	fmt.Print(q)
-
-	var response string
-	read, err := fmt.Scanln(&response)
-	if err != nil && read != 0 {
-		fmt.Println("Error: " + helpers.PrintRed(err.Error()))
-		return false
-	} else if read == 0 {
-		return false
-	}
-
-	response = strings.ToLower(response)
-
-	if response == "y" || response == "yes" {
-		return true
-	} else if response == "n" || response == "no" || response == "" {
-		return false
-	} else {
-		fmt.Println("Please type yes or no and then press enter:")
-		return askForConfirmation(q)
-	}
 }
