@@ -68,6 +68,7 @@ func init() {
                         You can add other projects by using this option several times.`)
 	logCmd.Flags().StringSliceP("tag", "T", []string{}, `Reports activity only for frames containing the given tag.
                         You can add several tags by using this option multiple times`)
+	logCmd.Flags().BoolP("quiet", "q", false, "Only list project ids")
 	logCmd.Flags().BoolP("oneline", "o", false, "Compact output")
 	logCmd.Flags().BoolP("verbose", "v", false, "Verbose output")
 
@@ -106,5 +107,10 @@ func log(cmd *cobra.Command, args []string) {
 		oneline = false
 	}
 
-	tracker.Log(query, oneline, verbose)
+	quiet, err := cmd.Flags().GetBool("quiet")
+	if err != nil {
+		quiet = false
+	}
+
+	tracker.Log(query, oneline, verbose, quiet)
 }

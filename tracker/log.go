@@ -9,7 +9,7 @@ import (
 	"tracker/helpers"
 )
 
-func Log(q FramesQuery, oneline bool, verbose bool) {
+func Log(q FramesQuery, oneline bool, verbose bool, quiet bool) {
 	frames := GetFramesFiltered(q)
 	groupedFrames := make(map[int][]Frame)
 	order := make([]int, 0, len(frames))
@@ -56,17 +56,22 @@ func Log(q FramesQuery, oneline bool, verbose bool) {
 	}
 
 	for _, timestamp := range order {
-		if !oneline {
+		if !oneline && !quiet {
 			date := time.Unix(int64(timestamp), 0).Format(LongDateFormat)
 			fmt.Printf(
 				"%s (%s)\n",
 				helpers.PrintBold(helpers.PrintGreen(date)),
-				TrackerDuration{(time.Duration(durationPerDay[timestamp]) * time.Second)}.String(),
+				TrackerDuration{time.Duration(durationPerDay[timestamp]) * time.Second}.String(),
 			)
 		}
 
 		for _, frame := range groupedFrames[timestamp] {
 			if frame.InProgress() {
+				continue
+			}
+
+			if quiet {
+				fmt.Println(frame.Uuid)
 				continue
 			}
 
@@ -103,7 +108,7 @@ func Log(q FramesQuery, oneline bool, verbose bool) {
 			)
 		}
 
-		if !oneline {
+		if !oneline && !quiet {
 			fmt.Print("\n")
 		}
 	}

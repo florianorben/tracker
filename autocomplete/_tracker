@@ -132,6 +132,7 @@ _tracker() {
             '*'{-T,--tag}'[only for the given tag]: :_tracker_tags' \
             '(--from -f)'{-f,--from}'[start date]:date (YYYY-MM-DD):' \
             '(--to -t)'{-t,--to}'[end date]:date (YYYY-MM-DD):' \
+            '*'{-q,--quiet}'[Only list project ids]' \
             '--help'
           ;;
         (merge)
