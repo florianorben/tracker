@@ -1,7 +1,3 @@
-## Downloads
-
-**[OSX]([tracker binary](http://srv-dev:3000/florian.orben/tracker/uploads/d2016617e947f871777b02aed071dede/tracker)**
-
 ## tracker
 
 Tracker is a tool aimed at helping you monitoring your time.
