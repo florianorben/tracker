@@ -55,6 +55,7 @@ func NewFrame(p string, t []string) Frame {
 
 func (f *Frame) MarshalJSON() ([]byte, error) {
 	var end = ""
+
 	if !f.End.IsZero() {
 		end = f.End.Format(DateTimeFormat)
 	}
@@ -119,32 +120,46 @@ func (f *Frame) UnmarshalJSON(data []byte) error {
 }
 
 func (f Frame) Equals(other Frame) bool {
+	if f.Synced != other.Synced {
+		return false
+	}
+
 	if f.Start != other.Start {
 		return false
-	} else if f.End != other.End {
-		return false
-	} else if f.Project != other.Project {
-		return false
-	} else if f.Uuid != other.Uuid {
-		return false
-	} else if len(f.Tags) != len(other.Tags) {
-		return false
-	} else if f.Comment != other.Comment {
-		return false
-	} else if f.Synced != other.Synced {
-		return false
-	} else {
-		tmpTags := make(map[string]bool)
-		for _, tag := range f.Tags {
-			tmpTags[tag] = true
-		}
-		for _, otherTag := range other.Tags {
-			tmpTags[otherTag] = true
-		}
+	}
 
-		if len(tmpTags) != len(f.Tags) {
-			return false
-		}
+	if f.End != other.End {
+		return false
+	}
+
+	if f.Project != other.Project {
+		return false
+	}
+
+	if f.Uuid != other.Uuid {
+		return false
+	}
+
+	if len(f.Tags) != len(other.Tags) {
+		return false
+	}
+
+	if f.Comment != other.Comment {
+		return false
+	}
+
+	tmpTags := make(map[string]bool)
+
+	for _, tag := range f.Tags {
+		tmpTags[tag] = true
+	}
+
+	for _, otherTag := range other.Tags {
+		tmpTags[otherTag] = true
+	}
+
+	if len(tmpTags) != len(f.Tags) {
+		return false
 	}
 
 	return true
