@@ -3,10 +3,10 @@ package tracker
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/florianorben/tracker/helpers"
 	"os"
 	"strings"
 	"time"
-	"github.com/florianorben/tracker/helpers"
 
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
@@ -298,7 +298,7 @@ func EditFrame(opts EditFrameOpts) (Frame, error) {
 	}
 
 	var newFrame Frame
-	json.Unmarshal(newFrameContents, &newFrame)
+	_ = json.Unmarshal(newFrameContents, &newFrame)
 	newFrame.Uuid = frame.Uuid
 	newFrame.LastEdit = time.Now()
 
