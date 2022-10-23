@@ -298,7 +298,7 @@ func EditFrame(opts EditFrameOpts) (Frame, error) {
 	}
 
 	var newFrame Frame
-	json.Unmarshal(newFrameContents, &newFrame)
+	_ = json.Unmarshal(newFrameContents, &newFrame)
 	newFrame.Uuid = frame.Uuid
 	newFrame.LastEdit = time.Now()
 
