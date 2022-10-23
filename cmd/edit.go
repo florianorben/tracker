@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"strconv"
-	"tracker/helpers"
-	"tracker/tracker"
+	"github.com/florianorben/tracker/helpers"
+	"github.com/florianorben/tracker/tracker"
 
 	"github.com/spf13/cobra"
 )

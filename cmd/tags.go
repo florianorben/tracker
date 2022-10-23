@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/florianorben/tracker/helpers"
+	"github.com/florianorben/tracker/tracker"
 	"github.com/spf13/cobra"
-	"tracker/helpers"
-	"tracker/tracker"
 )
 
 var tagsCmd = &cobra.Command{

@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/florianorben/tracker/helpers"
+	"github.com/florianorben/tracker/tracker"
 	"os"
-	"tracker/helpers"
-	"tracker/tracker"
 
 	"github.com/spf13/cobra"
 	"github.com/zalando/go-keyring"

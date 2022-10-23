@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"tracker/helpers"
-	"tracker/tracker"
+	"github.com/florianorben/tracker/helpers"
+	"github.com/florianorben/tracker/tracker"
 )
 
 var cancelCmd = &cobra.Command{

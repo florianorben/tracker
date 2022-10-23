@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"time"
-	"tracker/helpers"
-	"tracker/tracker"
+	"github.com/florianorben/tracker/helpers"
+	"github.com/florianorben/tracker/tracker"
 
 	"strings"
 

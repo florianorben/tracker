@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-	"tracker/helpers"
+	"github.com/florianorben/tracker/helpers"
 	"unicode"
 
 	"github.com/BurntSushi/toml"
