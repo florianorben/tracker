@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/florianorben/tracker/tracker"
 	"github.com/spf13/cobra"
-	"tracker/tracker"
 )
 
 var framesCmd = &cobra.Command{

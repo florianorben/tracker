@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"tracker/tracker"
+	"github.com/florianorben/tracker/tracker"
 )
 
 var restartCmd = &cobra.Command{

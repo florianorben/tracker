@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"tracker/helpers"
-	"tracker/tracker"
+	"github.com/florianorben/tracker/helpers"
+	"github.com/florianorben/tracker/tracker"
 )
 
 var configCmd = &cobra.Command{

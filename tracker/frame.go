@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 	"time"
-	"tracker/helpers"
+	"github.com/florianorben/tracker/helpers"
 
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"

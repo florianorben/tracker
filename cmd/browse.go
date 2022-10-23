@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/toqueteos/webbrowser"
-	"tracker/helpers"
+	"github.com/florianorben/tracker/helpers"
 )
 
 // browseCmd represents the browse command

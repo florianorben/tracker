@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"tracker/helpers"
+	"github.com/florianorben/tracker/helpers"
 )
 
 func Log(q FramesQuery, oneline bool, verbose bool, quiet bool) {

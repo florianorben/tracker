@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"tracker/tracker"
+	"github.com/florianorben/tracker/tracker"
 )
 
 var statusCmd = &cobra.Command{
@@ -52,15 +52,15 @@ func status(cmd *cobra.Command, args []string) {
 			formattedTags = " " + formattedTags
 		}
 
-        if cmd.Flag("short").Value.String() != "" {
-            fmt.Printf("Project %s started %s\n", activeFrame.FormattedProject(), activeFrame.RelativeTime())
-        } else {
-		    fmt.Printf(
-		        "Project %s%s started %s (%s)\n",
-			    activeFrame.FormattedProject(),
-		        formattedTags,
-		        activeFrame.RelativeTime(),
-		        activeFrame.Start,
+		if cmd.Flag("short").Value.String() != "" {
+			fmt.Printf("Project %s started %s\n", activeFrame.FormattedProject(), activeFrame.RelativeTime())
+		} else {
+			fmt.Printf(
+				"Project %s%s started %s (%s)\n",
+				activeFrame.FormattedProject(),
+				formattedTags,
+				activeFrame.RelativeTime(),
+				activeFrame.Start,
 		    )
         }
 	}

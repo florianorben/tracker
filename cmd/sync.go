@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"tracker/tracker"
+	"github.com/florianorben/tracker/tracker"
 
 	"github.com/spf13/cobra"
 )

@@ -8,8 +8,8 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
-	"tracker/helpers"
-	"tracker/tracker"
+	"github.com/florianorben/tracker/helpers"
+	"github.com/florianorben/tracker/tracker"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
