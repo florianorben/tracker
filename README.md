@@ -17,6 +17,11 @@ Tracker is a tool aimed at helping you monitoring your time.
 tracker
 ```
 
+## Installation
+* clone this repository `git clone git@github.com:florianorben/tracker.git`
+* install dependencies `go mod tidy`
+* start monitoring your time :)
+
 ### Options
 
 ```
