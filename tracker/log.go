@@ -2,11 +2,11 @@ package tracker
 
 import (
 	"fmt"
+	"github.com/florianorben/tracker/helpers"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
-	"github.com/florianorben/tracker/helpers"
 )
 
 func Log(q FramesQuery, oneline bool, verbose bool, quiet bool) {

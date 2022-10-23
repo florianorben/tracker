@@ -3,10 +3,10 @@ package tracker
 import (
 	"bytes"
 	"fmt"
+	"github.com/florianorben/tracker/helpers"
 	"io/ioutil"
 	"os"
 	"strings"
-	"github.com/florianorben/tracker/helpers"
 	"unicode"
 
 	"github.com/BurntSushi/toml"

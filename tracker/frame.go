@@ -3,10 +3,10 @@ package tracker
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/florianorben/tracker/helpers"
 	"os"
 	"strings"
 	"time"
-	"github.com/florianorben/tracker/helpers"
 
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
