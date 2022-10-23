@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Log(q FramesQuery, oneline bool, verbose bool, quiet bool) {
+func Log(q FramesQuery, oneLine bool, verbose bool, quiet bool) {
 	frames := GetFramesFiltered(q)
 	groupedFrames := make(map[int][]Frame)
 	order := make([]int, 0, len(frames))
@@ -56,7 +56,7 @@ func Log(q FramesQuery, oneline bool, verbose bool, quiet bool) {
 	}
 
 	for _, timestamp := range order {
-		if !oneline && !quiet {
+		if !oneLine && !quiet {
 			date := time.Unix(int64(timestamp), 0).Format(LongDateFormat)
 			fmt.Printf(
 				"%s (%s)\n",
@@ -76,17 +76,17 @@ func Log(q FramesQuery, oneline bool, verbose bool, quiet bool) {
 			}
 
 			indent := ""
-			if !oneline {
+			if !oneLine {
 				indent = "        "
 			}
 
 			shortDate := ""
-			if oneline {
+			if oneLine {
 				shortDate = helpers.PrintTeal(time.Unix(int64(timestamp), 0).Format(DateFormat) + " ")
 			}
 
 			comment := ""
-			if !oneline && verbose && frame.Comment != "" {
+			if !oneLine && verbose && frame.Comment != "" {
 				commentIndent := indent + "  "
 				commentLines := strings.Split(frame.Comment, "\n")
 				for i := range commentLines {
@@ -108,7 +108,7 @@ func Log(q FramesQuery, oneline bool, verbose bool, quiet bool) {
 			)
 		}
 
-		if !oneline && !quiet {
+		if !oneLine && !quiet {
 			fmt.Print("\n")
 		}
 	}
