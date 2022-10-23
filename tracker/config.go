@@ -99,16 +99,18 @@ func EditConfig() error {
 }
 
 func writeToConfigFile(b []byte) error {
-	if file, err := os.OpenFile(viper.ConfigFileUsed(), os.O_WRONLY|os.O_TRUNC, 0666); err == nil {
-		defer file.Close()
+	var (
+		file *os.File
+		err  error
+	)
 
-		_, err := file.Write(b)
-		if err != nil {
-			return err
-		}
-	} else {
+	if file, err = os.OpenFile(viper.ConfigFileUsed(), os.O_WRONLY|os.O_TRUNC, 0666); err != nil {
 		return err
 	}
 
-	return nil
+	defer file.Close()
+
+	_, err = file.Write(b)
+
+	return err
 }
